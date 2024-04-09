@@ -18,9 +18,15 @@ ANSWERS = [
 ]
 
 
+
 def index(request):
     page_num = request.GET.get('page', 1)
     paginator = Paginator(QUESTIONS, 5)
+    try:
+        if int(page_num) > paginator.num_pages or int(page_num)<0:
+            page_num = paginator.num_pages
+    except:
+        page_num = paginator.num_pages
     page_obj = paginator.page(page_num)
     return render(request, "index.html", {"questions": page_obj})
 
@@ -29,11 +35,18 @@ def hot(request):
     questions = QUESTIONS[10:]
     page_num = request.GET.get('page', 1)
     paginator = Paginator(questions, 5)
+    try:
+        if int(page_num) > paginator.num_pages or int(page_num)<0:
+            page_num = paginator.num_pages
+    except:
+        page_num = paginator.num_pages
     page_obj = paginator.page(page_num)
     return render(request, "hot.html", {"questions": page_obj})
 
 
 def question(request, question_id):
+    if question_id > len(QUESTIONS):
+        question_id = len(QUESTIONS)-1
     item = QUESTIONS[question_id]
     answers = ANSWERS[5:]
     page_num = request.GET.get('page', 1)
@@ -49,6 +62,7 @@ def login(request):
 def signup(request):
     return render(request, "signup.html")
 
-
+def ask(request):
+    return render(request, "ask.html")
 def settings(request):
     return render(request, "settings.html")
