@@ -1,0 +1,71 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<main class="container-fluid container-lg mt-3">
+    <div class="d-flex gap-3 align-items-center mb-3">
+        <h1>Settings: Dr. Pupkin</h1>
+    </div>
+
+    <form class="g-0 mb-3">
+
+        <div class="row">
+            <div class="col-8">
+                <div class="row ">
+
+
+                </div>
+                <div class="row ">
+                    <div class="col-3 p-2">
+                        <label class="form-label">Login</label>
+                    </div>
+                    <div class="col">
+                        <input type="email" class="form-control" placeholder="dr_pepper" maxlength="30">
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-3 p-2">
+                        <label class="form-label">Email</label>
+                    </div>
+                    <div class="col">
+                        <input type="email" class="form-control" placeholder="drpepper@mail.ru" maxlength="30">
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-3 p-2">
+                        <label class="form-label">Nickname</label>
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="Dr.Pepper" maxlength="30">
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-3 p-2">
+                        <label class="form-label">Upload avatar</label>
+                    </div>
+
+                    <div class="col p-2">
+                        <div class="p-2">
+                            <img src="img.jpg" width="150" height="150"/>
+                        </div>
+                        <input class="form-control" type="file" id="formFile"></div>
+                </div>
+                <div class="row ">
+                    <div class="col-3 p-2">
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-outline-success" type="submit">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</main>
+
+{% endblock %}

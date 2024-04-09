@@ -1,0 +1,59 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<main class="container-fluid container-lg mt-3 g-3">
+    <div class="d-flex gap-3 align-items-center mb-3">
+        <h1>New Question</h1>
+
+    </div>
+    <form class="g-0 mb-3">
+
+        <div class="row">
+
+            <div class="col-8">
+                <div class=" p-2">
+                    <div class="alert alert-danger" role="alert">
+                        Sorry! wrong password
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-3 p-2">
+                        <label class="form-label">Title</label>
+                    </div>
+                    <div class="col">
+                        <input type="email" class="form-control" placeholder="How to build a moon park?">
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-3 p-2">
+                        <label class="form-label">Text</label>
+                    </div>
+                    <div class="col">
+                        <textarea class="form-control mb-3" rows="7" placeholder="Really how?"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3 p-2">
+                        <label class="form-label">Tags</label>
+                    </div>
+                    <div class="col">
+                        <input type="email" class="form-control" placeholder="moon, park, puzzle">
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-3 p-2">
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-outline-success" type="submit">Ask!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+
+</main>
+{% endblock %}
+

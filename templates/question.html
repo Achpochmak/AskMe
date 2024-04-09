@@ -1,0 +1,35 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<main class="container-fluid container-lg mt-3">
+    <div class="d-flex gap-3 align-items-center">
+        <h1>Questions</h1>
+    </div>
+    <div class="col-8 pb-5">
+
+        {% include "layouts/question.html" with item=question %}
+
+        <hr>
+
+
+        {% for answer in answers %}
+        {% include "layouts/answer.html" with item=answer %}
+        {%endfor%}
+        <form class="mb-3" role="search">
+            <textarea
+                    class="form-control me-2 mb-3"
+                    type="search"
+                    placeholder="Enter your answer here"
+                    aria-label="Search"
+                    rows="3"
+            ></textarea>
+            <button class="btn btn-outline-success" type="submit">Answer</button>
+        </form>
+
+    </div>
+
+</main>
+{% include "layouts/pagination.html" with page_obj=answers %}
+{% endblock %}
