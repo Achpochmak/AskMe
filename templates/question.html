@@ -17,7 +17,7 @@
         {% for answer in answers %}
         {% include "components/answer.html" with item=answer %}
         {%endfor%}
-
+        {% include "components/pagination.html" with page_obj=answers %}
         <form class="mb-3" role="search">
             <textarea
                     class="form-control me-2 mb-3"
@@ -32,5 +32,5 @@
     </div>
 
 </main>
-{% include "components/pagination.html" with page_obj=answers %}
+
 {% endblock %}
