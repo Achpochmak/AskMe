@@ -61,5 +61,3 @@ def ask(request):
 
 def settings(request):
     return render(request, "settings.html")
-def ask(request):
-    return render(request, "ask.html")
