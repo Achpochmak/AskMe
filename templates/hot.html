@@ -4,12 +4,12 @@
 {% block content %}
 <div class="d-flex gap-3 align-items-center">
     <h1>Hot Questions</h1>
-    <a href="{% url 'index' %}">New Questions</a>
+    <a href="/">New Questions</a>
 </div>
 <div class="col-8">
     {% for question in questions %}
-{% include "components/question.html" with item=question %}
+{% include "layouts/question.html" with item=question %}
     {%endfor%}
-{% include "components/pagination.html" with page_obj=questions %}
+{% include "layouts/pagination.html" with page_obj=questions %}
 </div>
 {% endblock %}

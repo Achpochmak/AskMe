@@ -8,9 +8,9 @@
 </div>
 <div class="col-8 pb-5">
     {% for question in questions %}
-    {% include "components/question.html" with item=question %}
+    {% include "layouts/question.html" with item=question %}
     {%endfor%}
 </div>
-{% include "components/pagination.html" with page_obj=questions %}
+{% include "layouts/pagination.html" with page_obj=questions %}
 
 {% endblock %}
