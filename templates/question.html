@@ -9,15 +9,15 @@
     </div>
     <div class="col-8 pb-5">
 
-        {% include "layouts/question.html" with item=question %}
+        {% include "components/question.html" with item=question %}
 
         <hr>
 
 
         {% for answer in answers %}
-        {% include "layouts/answer.html" with item=answer %}
+        {% include "components/answer.html" with item=answer %}
         {%endfor%}
-
+        {% include "components/pagination.html" with page_obj=answers %}
         <form class="mb-3" role="search">
             <textarea
                     class="form-control me-2 mb-3"
@@ -32,5 +32,5 @@
     </div>
 
 </main>
-{% include "layouts/pagination.html" with page_obj=answers %}
+
 {% endblock %}

@@ -1,58 +1,38 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from app import models
+from app.models import Question, Answer, Tag
+
 
 # Create your views here.
-QUESTIONS = [
-    {
-        "id": i,
-        "title": f"Question {i}",
-        "text": f"This is question number {i}"
-    } for i in range(200)
-]
-ANSWERS = [
-    {
-        "id": i,
-        "title": f"Answer {i}",
-        "text": f"This is answer number {i}"
-    } for i in range(10)
-]
 
 
-def index(request):
-    questions=models.Question.objects.get_new()
+def pagination(request, data):
     page_num = request.GET.get('page', 1)
-    paginator = Paginator(questions, 5)
+    paginator = Paginator(data, 5)
     try:
         if int(page_num) > paginator.num_pages or int(page_num) < 0:
             page_num = paginator.num_pages
     except:
         page_num = paginator.num_pages
-    page_obj = paginator.page(page_num)
+    return paginator.page(page_num)
+
+
+def index(request):
+    page_obj = pagination(request, Question.objects.get_new())
     return render(request, "index.html", {"questions": page_obj})
 
 
 def hot(request):
-    questions = QUESTIONS[10:]
-    page_num = request.GET.get('page', 1)
-    paginator = Paginator(questions, 5)
-    try:
-        if int(page_num) > paginator.num_pages or int(page_num) < 0:
-            page_num = paginator.num_pages
-    except:
-        page_num = paginator.num_pages
-    page_obj = paginator.page(page_num)
+    page_obj = pagination(request, Question.objects.get_hot())
     return render(request, "hot.html", {"questions": page_obj})
 
 
 def question(request, question_id):
-    if question_id > len(QUESTIONS):
-        question_id = len(QUESTIONS) - 1
-    item = QUESTIONS[question_id]
-    answers = ANSWERS[5:]
-    page_num = request.GET.get('page', 1)
-    paginator = Paginator(answers, 3)
-    page_obj = paginator.page(page_num)
+    item = Question.objects.annotate(
+            question_likes_count=models.Count('questionlike')).get(pk=question_id)
+    answers = Answer.objects.annotate(answer_likes_count=models.Count('answerlike')).filter(question_id=question_id)
+    page_obj = pagination(request, answers)
     return render(request, "question.html", {"question": item, "answers": page_obj})
 
 
@@ -70,3 +50,9 @@ def ask(request):
 
 def settings(request):
     return render(request, "settings.html")
+
+
+def tag(request, tag_name):
+    questions = Question.objects.get_by_tag(tag_name)
+    page_obj = pagination(request, questions)
+    return render(request, "tag.html", {"tag_name": tag_name, "questions": page_obj})
