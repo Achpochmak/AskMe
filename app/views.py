@@ -29,8 +29,7 @@ def hot(request):
 
 
 def question(request, question_id):
-    item = Question.objects.annotate(
-            question_likes_count=models.Count('questionlike')).get(pk=question_id)
+    item = Question.objects.get(pk=question_id)
     answers = Answer.objects.annotate(answer_likes_count=models.Count('answerlike')).filter(question_id=question_id)
     page_obj = pagination(request, answers)
     return render(request, "question.html", {"question": item, "answers": page_obj})

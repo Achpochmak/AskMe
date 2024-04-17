@@ -6,20 +6,20 @@ from django.db.models import Count
 
 class QuestionManager(models.Manager):
     def get_hot(self):
-        return self.annotate(answers_count=models.Count('answer')).annotate(
-            question_likes_count=models.Count('questionlike')).order_by('-question_likes_count')
+        return self.annotate(answers_count=models.Count('answer',  distinct=True),
+            question_likes_count=models.Count('questionlike',  distinct=True)).order_by('-question_likes_count')
 
     def get_new(self):
-        return self.annotate(answers_count=models.Count('answer')).annotate(
-            question_likes_count=models.Count('questionlike')).order_by('-created_at')
+        return self.annotate(answers_count=models.Count('answer',  distinct=True),
+            question_likes_count=models.Count('questionlike',  distinct=True)).order_by('-created_at')
 
     def get_by_tag(self, tag_name):
         self = self.answers_count()
-        return self.filter(tags__name=tag_name).annotate(question_likes_count=models.Count('questionlike')).order_by(
+        return self.filter(tags__name=tag_name).annotate(question_likes_count=models.Count('questionlike',  distinct=True)).order_by(
             'created_at')
 
     def answers_count(self):
-        return self.get_queryset().annotate(answers_count=models.Count('answer'))
+        return self.get_queryset().annotate(answers_count=models.Count('answer',  distinct=True))
 
     def question_likes_count(self):
         return self.get_queryset().annotate(question_likes_count=models.Count('questionlike'))
@@ -62,7 +62,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     content = models.TextField()
-    question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
