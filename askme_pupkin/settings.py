@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 INSTALLED_APPS = [
     'app',
+    'bootstrap5',
     'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -1,87 +1,30 @@
 {% extends "layouts/base.html" %}
 {% load static %}
-
+{%load bootstrap5%}
 {% block content %}
 
 
 <main class="container-fluid container-lg mt-3">
     <div class="d-flex gap-3 align-items-center mb-3">
-        <h1>Registration</h1>
+        <h1>Sign Up</h1>
+
     </div>
 
-    <form class="g-0 mb-3">
-
-        <div class="row">
-            <div class="col-8">
-                <div class="row ">
-                    <div class=" p-2">
-                        <div class="alert alert-danger" role="alert">
-                            Sorry! this email address is already registered!
-                        </div>
-                    </div>
-
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Login</label>
-                    </div>
-                    <div class="col">
-                        <input type="email" class="form-control" placeholder="dr_pepper" maxlength="30">
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Email</label>
-                    </div>
-                    <div class="col">
-                        <input type="email" class="form-control" placeholder="drpepper@mail.ru" maxlength="30">
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Nickname</label>
-                    </div>
-                    <div class="col">
-                        <input type="text" class="form-control" placeholder="Dr.Pepper" maxlength="30">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Password</label>
-                    </div>
-                    <div class="col">
-                        <input type="password" class="form-control" maxlength="30">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Repeat password</label>
-                    </div>
-                    <div class="col">
-                        <input type="password" class="form-control" maxlength="30">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Upload avatar</label>
-                    </div>
-                    <div class="col">
-                        <input class="form-control" type="file" id="formFile"></div>
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-outline-success" type="submit">Register!</button>
-                    </div>
-                </div>
+    <form class="g-0 mb-3" method="post" action="">
+        {%bootstrap_form form%}
+        <div class="row ">
+            <div class="col">
+                <button class="btn btn-primary" type="submit">signup!</button>
             </div>
         </div>
-
+        <div class="row ">
+            <div class="d-flex gap-3 align-items-center col">
+                <a href="{% url 'login' %}">login</a>
+            </div>
+        </div>
+        {% csrf_token %}
     </form>
+
 
 </main>
 

@@ -43,7 +43,7 @@ class Command(BaseCommand):
             question.tags.add(*random.choices(tags, k=random.randint(1, 3)))
 
         for question in Question.objects.all():
-            for _ in range(random.randint(1, 20)):
+            for _ in range(random.randint(1, 30)):
                 Answer.objects.create(
                     content=fake.paragraph(),
                     question=question,
