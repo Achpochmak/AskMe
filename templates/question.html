@@ -18,7 +18,7 @@
         {% include "components/answer.html" with item=answer %}
         {%endfor%}
         {% include "components/pagination.html" with page_obj=answers %}
-        <form class="mb-3" role="search"  method="post" action="">
+        <form class="mb-3" role="search"  method="post" action="{% url "question" question.id %}">
                     {% csrf_token %}
 
             <textarea
@@ -35,5 +35,7 @@
     </div>
 
 </main>
+<script src="{%static '/js/main.js'%}"></script>
+<script src="{%static '/js/correct_answer.js'%}"></script>
 
 {% endblock %}

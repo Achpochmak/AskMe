@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 {% load static %}
-
+{%load bootstrap5%}
 {% block content %}
 
 
@@ -8,88 +8,28 @@
     <div class="d-flex gap-3 align-items-center mb-3">
         <h1>Settings: {{user.username}}</h1>
     </div>
-{% if form.errors %}
-<div class="alert alert-danger">
-    {% for field, errors in form.errors.items %}
-        {% for error in errors %}
-            {{ error }}
-        {% endfor %}
-    {% endfor %}
-</div>
-{% endif %}
-    {% if messages %}
-    <div class="alert alert-success">
 
-    {% for message in messages %}
-    {{ message }}
-    {% endfor %}
-
-    </div>
-{% endif %}
-    <form class="g-0 mb-3" method="post" action="">
+    <form class="g-0 mb-3" method="post" action="{% url 'settings' %}" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="row">
-            <div class="col-8">
-                <div class="row ">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Username</label>
-                    </div>
-                    <div class="col">
-                        <input type="text" name="username" class="form-control" value="{{ user.username }}" maxlength="30">
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Email</label>
-                    </div>
-                    <div class="col">
-                        <input type="text" name="email"  class="form-control" value="{{ user.email }}" maxlength="30">
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                        <label class="form-label">First Name</label>
-                    </div>
-                    <div class="col">
-                        <input type="text" name="first_name"  class="form-control" value="{{ user.first_name }}" maxlength="30">
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Last Name</label>
-                    </div>
-                    <div class="col">
-                        <input type="text" name="last_name"  class="form-control" value="{{ user.last_name }}" maxlength="30">
-                    </div>
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Nickname</label>
-                    </div>
-                    <div class="col">
-                        <input type="text" name="nickname"  class="form-control" value="{{ profile.nickname }}" maxlength="30">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-3 p-2">
-                        <label class="form-label">Upload avatar</label>
-                    </div>
+        {%bootstrap_form form%}
 
-                    <div class="col p-2">
-                        <div class="p-2">
-                            <img src="{{profile.avatar}}" width="150" height="150"/>
-                        </div>
-                        <input class="form-control" name="avatar" type="file" id="formFile"></div>
-                </div>
-                <div class="row ">
-                    <div class="col-3 p-2">
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-outline-success" type="submit">Save</button>
-                    </div>
-                </div>
+        <div class="p-2">
+    {% if request.user.profile.avatar %}
+        <img src="{{ request.user.profile.avatar.url }}" alt="profile" width="150" height="150"/>
+    {% else %}
+        <p>No avatar uploaded</p>
+    {% endif %}
+</div>
+
+
+        <div class="row ">
+            <div class="col-3 p-2">
+            </div>
+            <div class="col">
+                <button class="btn btn-outline-success" type="submit">Save</button>
             </div>
         </div>
+
     </form>
 
 

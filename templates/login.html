@@ -10,8 +10,9 @@
 
     </div>
 
-    <form class="g-0 mb-3" method="post" action="">
+    <form class="g-0 mb-3" method="post" action="{% url 'login' %}">
         {%bootstrap_form form%}
+        <input type="hidden" name="next" value="{{ request.GET.next }}"/>
         <div class="row ">
             <div class="col">
                 <button class="btn btn-primary" type="submit">Login!</button>

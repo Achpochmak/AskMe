@@ -4,13 +4,13 @@
         <div class="col-3 p-2">
             <div class="border w-100 h-50 mb-3" style="height: 100px">
                 <img
-                        src="{% static 'img/Cat03.jpg'%}"
+                        src="{{item.user.profile.avatar.url}}"
                         class="img-fluid rounded-start"
                         alt="..."
                 />
             </div>
-            <div class="input-group flex-nowrap p-3">
-                <input type="number" value="{{ item.question_likes_count }}" class="form-control"/>
+            <div class="input-group flex-nowrap p-3 likes-section" >
+                <input type="number" data-type="question" data-id="{{question.id}}" value="{{ item.question_likes_count }}" class="form-control"/>
             </div>
         </div>
         <div class="col">

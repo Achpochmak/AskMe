@@ -1,34 +1,41 @@
 {% load static %}
- <article class="card mb-3 w-100">
-            <div class="row g-0">
-              <div class="col-3 p-2">
-                <div class="border w-100 mb-3" style="height: 100px">
-                  <img
-                    src="img.jpg"
-                    class="img-fluid rounded-start"
-                    alt="..."
-                  />
-                </div>
-                <div class="input-group flex-nowrap">
-                  <input type="number" value="{{ item.answer_likes_count }}" class="form-control" />
-                </div>
-              </div>
-              <div class="col">
-                <div class="card-body">
-
-                  <p class="card-text">
-                   {{item.content}}.
-                  </p>
-                  <div class="row ">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" >
-                      <label class="form-check-label" >
-                        Correct!
-                      </label>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
+<article class="card mb-3 w-100">
+    <div class="row g-0">
+        <div class="col-3 p-2">
+            <div class="border w-100 mb-3" style="height: 100px">
+                <img
+                        src="{{item.user.profile.avatar.url}}"
+                        class="img-fluid rounded-start"
+                        alt="..."
+                />
             </div>
-          </article>
+            <div class="input-group flex-nowrap p-3 likes-section">
+                <input type="number" data-type="answer" data-id="{{item.id}}" value="{{ item.answer_likes_count  }}"
+                       class="form-control"/>
+            </div>
+
+        </div>
+        <div class="col">
+            <div class="card-body">
+
+                <p class="card-text">
+                    {{item.content}}.
+                </p>
+                <div class="row ">
+<div class="row">
+    <div class="form-check">
+        {% if item.question.user == request.user %}
+            <input class="form-check-input"  data-id="{{ item.id }}" type="checkbox" {% if item.correct %} checked {% endif %}>
+        {% else %}
+            <input class="form-check-input"  data-id="{{ item.id }}" type="checkbox" disabled {% if item.correct %} checked  {% endif %}>
+        {% endif %}
+        <label class="form-check-label">Correct!</label>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</article>

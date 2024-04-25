@@ -174,3 +174,4 @@ askme_venv/
 /.venv/
 *.swp
 *.swo
+uploads/

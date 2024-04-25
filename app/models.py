@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 
 
 class QuestionManager(models.Manager):
@@ -14,8 +15,6 @@ class QuestionManager(models.Manager):
         return Tag.objects.annotate(usage_count=models.Count('question')).order_by('-usage_count')
 
     def get_hot_users(self):
-        print(User.objects.annotate(usage_count=models.Count('question') + models.Count('answer')).order_by(
-            '-usage_count'))
         return User.objects.annotate(usage_count=models.Count('question') + models.Count('answer')).order_by(
             '-usage_count')
 
@@ -31,7 +30,7 @@ class QuestionManager(models.Manager):
 
     def get_question(self, question_id):
         return self.annotate(answers_count=models.Count('answer', distinct=True),
-                                                     question_likes_count=models.Count('questionlike', distinct=True))
+                             question_likes_count=models.Count('questionlike', distinct=True))
 
     def answers_count(self):
         return self.get_queryset().annotate(answers_count=models.Count('answer', distinct=True))
@@ -41,6 +40,10 @@ class QuestionManager(models.Manager):
 
     def answer_likes_count(self):
         return self.get_queryset().annotate(answer_likes_count=models.Count('answerlike'))
+
+    @staticmethod
+    def count_likes(id):
+        return QuestionLike.objects.filter(question=id).count()
 
 
 class Tag(models.Model):
@@ -54,7 +57,7 @@ class Tag(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
-    avatar = models.ImageField(null=True, blank=True)
+    avatar = models.ImageField(null=True, blank=True, default="Cat03.jpg", upload_to="avatar/%Y/%m/%d")
     nickname = models.CharField(max_length=255)
 
     def __str__(self):
@@ -78,6 +81,7 @@ class Question(models.Model):
 class Answer(models.Model):
     content = models.TextField()
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    correct = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -86,21 +90,43 @@ class Answer(models.Model):
         return self.content
 
 
+class QuestionLikeManager(models.Manager):
+    def toggle_like(self, user, id):
+        question = get_object_or_404(Question, id=id)
+        if self.filter(user=user, question=question).exists():
+            self.filter(user=user, question=question).delete()
+        else:
+            self.create(user=user, question=question)
+        count = QuestionLike.objects.filter(question=question.id).count()
+        return count
+
 class QuestionLike(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = QuestionLikeManager()
 
     class Meta:
         unique_together = ('user', 'question')
 
+
+class AnswerLikeManager(models.Manager):
+    def toggle_like(self, user, id):
+        answer = get_object_or_404(Answer, id=id)
+        if self.filter(user=user, answer=answer).exists():
+            self.filter(user=user, answer=answer).delete()
+        else:
+            self.create(user=user, answer=answer)
+        count = AnswerLike.objects.filter(answer=answer.id).count()
+        return count
 
 class AnswerLike(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = AnswerLikeManager()
 
     class Meta:
         unique_together = ('user', 'answer')
