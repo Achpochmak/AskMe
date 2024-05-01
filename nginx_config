@@ -1,0 +1,34 @@
+upstream askme_pupkin {
+        server 127.0.0.1:8000;
+}
+
+server {
+        listen 80 default_server;
+        server_name 127.0.0.1;
+        gzip on;
+        gzip_types text/plain text/css application/json application/javascript tex>
+
+    location /uploads/ {
+        alias /home/ksu/technopark/askme_Kumova/;
+        expires 30d;
+        add_header Cache-Control "public";
+    }
+
+    location ~* \.(js|css|jpeg|jpg|png|gif|ico|svg)$ {
+        root /home/ksu/technopark/askme_Kumova/;
+        expires 30d;
+        add_header Cache-Control "public";
+    }
+
+location / {
+        proxy_pass http://askme_pupkin;
+        proxy_set_header Host $host;
+        proxy_cache mycache;
+        proxy_cache_valid 200 302 10m;
+        proxy_cache_valid 404 1m;
+        }
+}
+
+
+
+
