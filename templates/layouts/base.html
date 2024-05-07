@@ -88,7 +88,7 @@
             <h3 class="mt-5">Best Members</h3>
             <div>
                 {% for user in users%}
-                <a href="/member.html" class="d-block">{{user}}</a>
+                <a href="{% url 'member' user_id=user.id %}" class="d-block">{{user}}</a>
                 {% endfor%}
             </div>
         </div>

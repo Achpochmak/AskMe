@@ -15,7 +15,9 @@ urlpatterns = [
     path('question/<int:question_id>', views.question, name='question'),
     path('tag/<str:tag_name>', views.tag, name='tag'),
     path('like', views.like, name='like'),
-    path('correct_answer', views.correct_answer, name='correct_answer')
+    path('correct_answer', views.correct_answer, name='correct_answer'),
+    path('member/<int:user_id>', views.member, name='member'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)

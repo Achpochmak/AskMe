@@ -1,3 +1,5 @@
+import time
+
 from django.contrib import auth, messages
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
@@ -6,11 +8,30 @@ from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from app import models
-from app.forms import LoginForm, SignUpForm, AskForm, SettingsForm, AnswerForm
+from app.forms import LoginForm, SignUpForm, AskForm, SettingsForm, AnswerForm, MemberForm
 from app.models import Question, Answer, Tag, Profile, QuestionLike, AnswerLike
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.conf import settings as conf_settings
 import json
+import jwt
+from cent import Client, PublishRequest
+
+client = Client(api_url=conf_settings.CENTRIFUGO_API_URL, api_key=conf_settings.CENTRIFUGO_API_KEY)
+
+
+def get_centrifugo_data(user_id, channel):
+    return {
+        "centrifugo": {
+            "token": jwt.encode(
+                {"sub": str(user_id), "exp": int(time.time()) + 10 * 60},
+                conf_settings.CENTRIFUGO_TOKEN_HMAC_SECRET_KEY,
+                algorithm="HS256",
+            ),
+            "ws_url": conf_settings.CENTRIFUGO_WS_URL,
+            "channel": channel
+        }
+    }
 
 
 def pagination(request, data):
@@ -45,13 +66,16 @@ def question(request, question_id):
         question_id=question_id).order_by('created_at')
     page_obj = pagination(request, answers)
     if request.method == 'POST':
-        Answer.objects.create(question=item, content=request.POST['content'], user=request.user)
+        answer = Answer.objects.create(question=item, content=request.POST['content'], user=request.user)
+        answer.save()
+        publish_request = PublishRequest(channel=f'question{question_id}', data=model_to_dict(answer))
+        client.publish(publish_request)
         page_obj = pagination(request, answers)
         last_page_url = request.get_full_path() + f"?page={page_obj.paginator.num_pages}"
         return redirect(last_page_url)
     return render(request, "question.html",
                   {"question": item, "answers": page_obj, "tags": Question.objects.get_hot_tags()[:5],
-                   "users": Question.objects.get_hot_users()[:5]})
+                   "users": Question.objects.get_hot_users()[:5], **get_centrifugo_data(request.user.id, f'question{question_id}')})
 
 
 @require_http_methods(['GET', 'POST'])
@@ -115,6 +139,20 @@ def settings(request):
         if settings_form.is_valid():
             settings_form.save()
     return render(request, "settings.html", context={"form": settings_form})
+@login_required(login_url="login")
+def member(request, user_id):
+    profile = Profile.objects.get(user=user_id)
+    user=profile.user
+    dict = model_to_dict(user)
+    dict['avatar'] = profile.avatar
+    dict['nickname'] = profile.nickname
+    if request.method == 'GET':
+        member_form = MemberForm(initial=dict)
+    if request.method == 'POST':
+        settings_form = SettingsForm(request.POST, request.FILES, instance=user)
+        if settings_form.is_valid():
+            settings_form.save()
+    return render(request, "member.html", context={"form": member_form})
 
 
 @login_required(login_url="login")

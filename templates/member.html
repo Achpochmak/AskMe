@@ -1,0 +1,38 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{%load bootstrap5%}
+{% block content %}
+
+
+<main class="container-fluid container-lg mt-3">
+    <div class="d-flex gap-3 align-items-center mb-3">
+        <h1>Profile</h1>
+    </div>
+
+    <form class="g-0 mb-3" method="post" action="{% url 'settings' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {%bootstrap_form form%}
+
+        <div class="p-2">
+    {% if request.user.profile.avatar %}
+        <img src="{{ request.user.profile.avatar.url }}" alt="profile" width="150" height="150"/>
+    {% else %}
+        <p>No avatar uploaded</p>
+    {% endif %}
+</div>
+
+
+        <div class="row ">
+            <div class="col-3 p-2">
+            </div>
+            <div class="col">
+                <button class="btn btn-outline-success" type="submit">Save</button>
+            </div>
+        </div>
+
+    </form>
+
+
+</main>
+
+{% endblock %}

@@ -92,3 +92,13 @@ class AnswerForm(forms.Form):
 
     def clean(self):
         super().clean()
+
+class MemberForm(forms.ModelForm):
+    nickname = forms.CharField(required=False)
+    avatar = forms.ImageField(required=False)
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+
+
