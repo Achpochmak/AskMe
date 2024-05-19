@@ -5,5 +5,18 @@
   "admin_secret": "secret",
   "admin": true,
   "allowed_origins": ["http://127.0.0.1:8000"],
-  "allow_subscribe_for_client": true
+  "allow_subscribe_for_client": true,
+  "allow_publish_for_client": true,
+  "publish": true,
+  "presence": true,
+  "namespaces": [
+    {
+      "name": "rooms",
+      "publish": true,
+        "allow_publish_for_client": true,
+
+      "proxy_publish": true,
+      "proxy_subscribe": true
+    }
+  ]
 }

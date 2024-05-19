@@ -1,0 +1,167 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="container-fluid container-lg mt-3">
+    <div class="d-flex justify-content-center align-items-center">
+        <h1>Чат</h1>
+    </div>
+    <div class="d-flex justify-content-center">
+        <div class="col-8">
+            <div class="chat-container card shadow-sm">
+                <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                    <ul id="chat-thread" class="list-unstyled">
+                        {% for message in messages|slice:"50" %}
+                        <li class="{% if message.sender.username == user.username %}text-end{% else %}text-start{% endif %} mb-3">
+                            <div class="d-inline-block p-2 rounded {% if message.sender.username == user.username %}bg-info text-white{% else %}bg-dark-subtle text-dark{% endif %}">
+                                <p class="mb-0"><strong>{{ message.sender.first_name }} {{ message.sender.last_name }}:</strong></p>
+                                <p class="mb-0">{{ message.content }}</p>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="input-group">
+                        <input id="chat-message-input" class="form-control" type="text" autocomplete="off" autofocus placeholder="Введите сообщение..." />
+                        <button id="send-message" class="btn btn-outline-success">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://unpkg.com/centrifuge@5.0.1/dist/centrifuge.js"></script>
+<script type="text/javascript">
+    function sendMessageToServer(message) {
+        const data = new URLSearchParams();
+        data.append('sender', '{{ request.user.id }}');
+        data.append('receiver', '{{ user_id }}');
+        data.append('room_name', roomName);
+        data.append('content', message);
+
+        fetch('/send_message/', {
+            method: 'POST',
+            body: data,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+ function requestNotificationPermission() {
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission().then(permission => {
+          if (permission !== 'granted') {
+            alert('You need to enable notifications for this website to receive message alerts.');
+          }
+        });
+      }
+    }
+
+    function showNotification(message) {
+      if (Notification.permission === 'granted') {
+        new Notification('New Message', {
+          body: `${message.sender}: Новое сообщение!`,
+        });
+      }
+    }
+    const roomName = "{{ room_name }}";
+    const token = "{{ token }}";
+    const chatThread = document.querySelector('#chat-thread');
+    const messageInput = document.querySelector('#chat-message-input');
+    const sendMessageButton = document.querySelector('#send-message');
+    requestNotificationPermission();
+
+    const centrifuge = new Centrifuge("ws://localhost:8010/connection/websocket", {
+        token: token,
+        debug: true
+    });
+
+    centrifuge.on('connecting', function (ctx) {
+        console.log(`connecting: ${ctx.code}, ${ctx.reason}`);
+    }).on('connected', function (ctx) {
+        console.log(`connected over ${ctx.transport}`);
+    }).on('disconnected', function (ctx) {
+        console.log(`disconnected: ${ctx.code}, ${ctx.reason}`);
+    }).connect();
+
+    const sub = centrifuge.newSubscription(roomName);
+
+    sub.on('publication', function (ctx) {
+        const chatNewThread = document.createElement('li');
+        chatNewThread.classList.add('mb-3', ctx.data.sender === '{{ user.first_name}} {{ user.last_name}}' ? 'text-end' : 'text-start');
+
+        const chatMessageDiv = document.createElement('div');
+        chatMessageDiv.classList.add('d-inline-block', 'p-2', 'rounded', ctx.data.sender === '{{ user.first_name}} {{ user.last_name}}' ? 'bg-info' : 'bg-dark-subtle', ctx.data.sender === '{{ user.first_name}} {{ user.last_name}}' ? 'text-white' : 'text-dark');
+
+        const chatSender = document.createElement('p');
+        chatSender.classList.add('mb-0');
+        chatSender.innerHTML = `<strong>${ctx.data.sender}:</strong>`;
+
+        const chatMessage = document.createElement('p');
+        chatMessage.classList.add('mb-0');
+        chatMessage.innerText = ctx.data.message;
+
+        chatMessageDiv.appendChild(chatSender);
+        chatMessageDiv.appendChild(chatMessage);
+
+        chatNewThread.appendChild(chatMessageDiv);
+        chatThread.appendChild(chatNewThread);
+        chatThread.scrollTop = chatThread.scrollHeight;
+    if (ctx.data.sender !== '{{ user.username }}') {
+        showNotification(ctx.data);
+      }
+    }).on('subscribing', function (ctx) {
+      console.log(`subscribing: ${ctx.code}, ${ctx.reason}`);
+    }).on('subscribed', function (ctx) {
+      console.log('subscribed', ctx);
+    }).on('unsubscribed', function (ctx) {
+      console.log(`unsubscribed: ${ctx.code}, ${ctx.reason}`);
+    }).subscribe();
+
+    sendMessageButton.onclick = function () {
+        const message = messageInput.value;
+        if (!message) {
+            return;
+        }
+        sub.publish({ 'message': message, 'sender': '{{ user.first_name}} {{ user.last_name}}' });
+        sendMessageToServer(message);
+        messageInput.value = '';
+    };
+
+    messageInput.onkeyup = function (e) {
+        if (e.keyCode === 13) {
+            sendMessageButton.click();
+        }
+    };
+</script>
+{% endblock %}

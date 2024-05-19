@@ -6,7 +6,7 @@
 
 <main class="container-fluid container-lg mt-3">
     <div class="d-flex gap-3 align-items-center mb-3">
-        <h1>Log In</h1>
+        <h1>Войти</h1>
 
     </div>
 
@@ -15,12 +15,12 @@
         <input type="hidden" name="next" value="{{ request.GET.next }}"/>
         <div class="row ">
             <div class="col">
-                <button class="btn btn-primary" type="submit">Login!</button>
+                <button class="btn btn-primary" type="submit">Войти</button>
             </div>
         </div>
         <div class="row ">
             <div class="d-flex gap-3 align-items-center col">
-                <a href="{% url 'signup' %}">create new account</a>
+                <a href="{% url 'signup' %}">Создать новый аккаунт</a>
             </div>
         </div>
         {% csrf_token %}

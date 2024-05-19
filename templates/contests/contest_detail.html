@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+<h1>{{ contest.name }}</h1>
+<p>{{ contest.description }}</p>
+<p>Осталось времени: {{ remaining_time }} </p>
+
+<ul>
+    {% for problem in contest.problems.all %}
+    <li><a href="{% url 'submit_solution' problem.id %}">{{ problem.title }}</a></li>
+    {% endfor %}
+</ul>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="finish_contest" class="btn btn-danger">Закончить контест</button>
+</form>
+ <script>
+        // Запрет перехода назад
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+        };
+
+        // Запрет скриншотов (только для некоторых браузеров)
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'PrintScreen') {
+                navigator.clipboard.writeText('');
+                alert('Скриншоты запрещены!');
+            }
+        });
+
+        // Запрет копирования текста
+        document.addEventListener('copy', function (e) {
+            e.preventDefault();
+            alert('Копирование текста запрещено!');
+        });
+    </script>
+{% endblock %}

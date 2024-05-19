@@ -1,0 +1,23 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<h1>Архив тестов</h1>
+
+{% for data in tests_data %}
+<div class="m-3">
+<div class="card-body">
+    <div class="test-item">
+        <h2>{{ data.test.title }}</h2>
+        <p>Описание: {{ data.test.description }}</p>
+        <p>Дата начала: {{ data.test.start_time }}</p>
+        <p>Дата окончания: {{ data.test.end_time }}</p>
+
+        <div>
+            <img src="data:image/png;base64,{{ data.graph }}" alt="Graph for {{ data.test.title }}">
+        </div>
+    </div>
+</div>
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+ <h1>Problem: {{ problem.title }}</h1>
+<p>{{ problem.description }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Отправить</button>
+</form>
+
+{% if result_data %}
+    <h2>Результат</h2>
+    <p>{{ result_data }}</p>
+{% endif %}
+
+{% if previous_attempts %}
+    <h2>Предыдущие попытки</h2>
+    <table>
+        <tr>
+            <th>Номер попытки</th>
+            <th>Результата</th>
+            <th>Время компиляции</th>
+            <th>Использование памяти</th>
+            <th>Время отправки</th>
+        </tr>
+        {% for attempt in previous_attempts %}
+        <tr>
+            <td>{{ attempt.attempt_number }}</td>
+            <td>{{ attempt.result }}</td>
+            <td>{{ attempt.compile_time }}</td>
+            <td>{{ attempt.memory_usage }}</td>
+            <td>{{ attempt.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+{% endblock %}

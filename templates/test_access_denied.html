@@ -1,0 +1,16 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load bootstrap5 %}
+
+{% block content %}
+<main class="container-fluid container-lg mt-3">
+    <h1>Access Denied</h1>
+    {% if reason == 'attempts_exceeded' %}
+        <p>You have exceeded the maximum number of attempts for this test.</p>
+    {% elif reason == 'test_not_started' %}
+        <p>This test has not started yet. Please come back later.</p>
+    {% elif reason == 'test_ended' %}
+        <p>This test has ended and is no longer available.</p>
+    {% endif %}
+</main>
+{% endblock %}

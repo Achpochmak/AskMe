@@ -1,0 +1,86 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load bootstrap5 %}
+
+{% block content %}
+<html>
+<head>
+    <style>
+        /* Запрещаем выделение текста */
+        body {
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, и Firefox */
+        }
+
+        /* Запрещаем контекстное меню */
+        body {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-drag: none; /* Safari */
+            -khtml-user-drag: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera, и Firefox */
+        }
+    </style>
+</head>
+<body>
+<main class="container-fluid container-lg mt-3">
+    <div class="d-flex gap-3 align-items-center">
+        <h1>{{ test.title }}</h1>
+        <p id="time-left"></p> <!-- Отображение оставшегося времени -->
+    </div>
+    <div class="col-8 pb-5">
+       <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+    </div>
+</main>
+<script>
+    // Функция для обновления времени
+    function updateTimer() {
+        var endTime = new Date("{{ test.end_time|date:'Y-m-d H:i:s' }}").getTime();
+        var currentTime = new Date().getTime();
+        var timeLeft = endTime - currentTime;
+
+        var timeLeftElement = document.getElementById("time-left");
+        if (timeLeft > 0) {
+            var hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+            var minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            var secondsLeft = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            timeLeftElement.innerHTML = "Time left: " + hoursLeft + "h " + minutesLeft + "m " + secondsLeft + "s";
+        } else {
+            timeLeftElement.innerHTML = "Time's up!";
+            document.getElementById("test-form").submit(); // Автоматически отправляем форму, когда время истекает
+        }
+    }
+
+    window.onload = function() {
+        // Вызываем функцию обновления времени при загрузке страницы
+        updateTimer();
+
+        // Обновляем время каждую секунду
+        setInterval(updateTimer, 1000);
+
+        document.getElementById("test-form").addEventListener("submit", function(event) {
+            // Отменяем отправку формы по умолчанию
+            event.preventDefault();
+
+            var endTime = new Date("{{ test.end_time|date:'Y-m-d H:i:s' }}").getTime();
+            var currentTime = new Date().getTime();
+            var timeLeft = endTime - currentTime;
+
+            if (timeLeft > 0) {
+                // Отправляем форму, если время еще не истекло
+                this.submit();
+            }
+        });
+    };
+</script>
+
+</body>
+</html>
+{% endblock %}

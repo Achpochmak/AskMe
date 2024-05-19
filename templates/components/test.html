@@ -1,0 +1,21 @@
+{% load static %}
+<article class="card mb-3 w-100">
+    <div class="row g-0">
+
+        <div class="col">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'test' test.id %}">{{item.title}}</a>
+                </h5>
+                <p class="card-text">
+                    {{test.description}}
+
+                </p>
+                {{test.start_time}}-{{test.end_time}}
+                    <form method="get" action="{% url 'test_info' test_id=test.id %}">
+        <button class="btn btn-primary" type="submit">Начать</button>
+    </form>
+            </div>
+        </div>
+    </div>
+</article>

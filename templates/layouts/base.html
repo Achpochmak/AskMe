@@ -16,7 +16,7 @@
 <body>
 <nav class="navbar bg-dark border-bottom border-body navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'index' %}">Askme</a>
+        <a class="navbar-brand" href="{% url 'index' %}">Тесты</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -25,27 +25,13 @@
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex align-items-center">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'ask' %}">Ask</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'contest_list' %}">Контесты</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'archive' %}">Архив</a>
+                </li>
+
             </ul>
-            <form class="d-flex mx-auto mt-3" role="search">
-                <div class="input-group mb-3">
-                    <span class="input-group-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             class="bi bi-search"
-                             viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                        </svg>
-                    </span>
-                    <input
-                            class="form-control"
-                            type="search"
-                            placeholder="Search"
-                            aria-label="Search"
-                    />
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </div>
-            </form>
 
             <div class="d-flex justify-content-between gap-3">
                 <div class="border">
@@ -53,10 +39,10 @@
                 </div>
 
                 <div class="d-flex flex-column justify-content-between">
-                    <div class="text-body">{{user}}</div>
+                    <div class="text-body">{{user.first_name}} {{user.last_name}}</div>
                     <div class="nav-link active text-body" aria-current="page">
-                        <a class="text-body" href="{% url 'settings' %}">Settings</a>
-                        <a class="text-body" href="{% url 'logout' %}">Log out</a>
+                        <a class="text-body" href="{% url 'settings' %}">Настройки</a>
+                        <a class="text-body" href="{% url 'logout' %}">Выйти</a>
                     </div>
                 </div>
                 {%endif%}
@@ -73,25 +59,18 @@
             {% endblock %}
         </div>
         {% if user.is_authenticated %}
-        {% if users and tags%}
         <div class="col-4">
-            <h3>Popular Tags</h3>
-            <div class="row">
-                <div class="col">
-                    {% for tag in tags %}
-                    <a class="badge rounded-pill text-bg-primary" href="{% url 'tag' tag_name=tag.name %}
-                    ">{{tag.name}}</a>
-                    {%endfor%}
+            {% if teachers%}
 
-                </div>
-            </div>
-            <h3 class="mt-5">Best Members</h3>
+            <h3 class="mt-5">Преподаватели</h3>
             <div>
-                {% for user in users%}
-                <a href="{% url 'member' user_id=user.id %}" class="d-block">{{user}}</a>
+                {% for teacher in teachers%}
+                <a href="{% url 'room' user_id=user.id %}" class="d-block">{{teacher.user.first_name}} {{teacher.user.last_name}}</a>
                 {% endfor%}
             </div>
         </div>
+        {%else%}
+
         {%endif%}
 
         {%endif%}

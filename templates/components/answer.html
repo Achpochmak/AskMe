@@ -27,7 +27,7 @@
         {% if item.question.user == request.user %}
             <input class="form-check-input"  data-id="{{ item.id }}" type="checkbox" {% if item.correct %} checked {% endif %}>
         {% else %}
-            <input class="form-check-input"  data-id="{{ item.id }}" type="checkbox" disabled {% if item.correct %} checked  {% endif %}>
+            <input class="form-check-input"  data-id="{{ item.id }}" type="checkbox" disabled {% if item.correct %} checked      {% endif %}>
         {% endif %}
         <label class="form-check-label">Correct!</label>
     </div>

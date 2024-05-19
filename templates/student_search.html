@@ -1,0 +1,39 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="m-3">
+    <h1>Поиск ученика</h1>
+    <form class="m-3" method="GET" action="{% url 'student_search' %}">
+        <input class="form-control" type="text" name="q" placeholder="Введите имя ученика" value="{{ query }}">
+        <button class="btn btn-primary" type="submit">Поиск</button>
+    </form>
+
+    {% if students %}
+    <h2>Результаты поиска</h2>
+    <ul>
+
+        {% for student in students %}
+        <div class="card m-3">
+            <div class="card-body">
+                <div class="col-auto">
+                    {{student.first_name}} {{student.last_name}}
+                </div>
+                <div class="col-auto">
+                    <form class="m-3" method="GET" action="{% url 'room' user_id=user.id %}">
+                        <button class="btn btn-primary" type="submit">Открыть чат</button>
+                    </form>
+                    <form class="m-3" method="GET" action="{% url 'student_test_results' student_id=student.id %}">
+                        <button class="btn btn-primary" type="submit">Посмотреть статистику</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </ul>
+    {% else %}
+    {% if query %}
+    <p>Нет учеников, соответствующих запросу "{{ query }}".</p>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

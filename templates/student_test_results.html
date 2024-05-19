@@ -1,0 +1,28 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<body>
+    <div class="container mt-5">
+        <h1>Результаты {{ student.first_name }} {{ student.last_name }}</h1>
+        <p>Количество пройденных тестов: {{ total_tests }}</p>
+
+        <div>
+            <img src="data:image/png;base64,{{ graph }}" alt="Results Pie Chart">
+        </div>
+        <hr>
+        <h2>Индивидуальные результаты</h2>
+        <ul>
+            {% for result in test_results %}
+                <li>
+                    Тест: {{ result.test.title }} - Правильных ответов: {{ result.correct_answers_count }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"
+    ></script>
+</body>
+{% endblock %}

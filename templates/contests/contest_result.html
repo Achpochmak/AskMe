@@ -1,0 +1,18 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+
+<h1>Результаты контеста: {{ contest.name }}</h1>
+
+<table class="table">
+    <tr>
+        <th>Пользователь</th>
+        <th>Результат </th>
+    </tr>
+    {% for result in results %}
+    <tr>
+        <td>{{ result.user.first_name }} {{result.user.last_name}}</td>
+        <td>{{ result.total_score }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

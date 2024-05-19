@@ -1,0 +1,26 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+
+<h1>Доступные контесты</h1>
+{% for contest in available_contests %}
+<div class="card m-3">
+<div class="card-body">
+    <h2>{{ contest.name }}</h2>
+    <p>{{ contest.description }}</p>
+
+    <a href="{% url 'contest_detail' contest.id %}">Перейти</a>
+    </div>
+</div>
+{% endfor %}
+{% if unavailable_contests %}
+<h2>Недоступные контесты</h2>
+{% for contest, reason in unavailable_contests %}
+<div class="card m-3">
+<div class="card-body">
+    <h3>{{ contest.name }}</h3>
+    <p>{{ reason }}</p>
+</div>
+</div>
+{% endfor %}
+{% endif%}
+{% endblock %}

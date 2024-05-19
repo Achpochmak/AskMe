@@ -3,13 +3,13 @@
 
 {% block content %}
 <div class="d-flex gap-3 align-items-center mt-3 mb-4">
-    <h1>New Questions</h1>
-    <a href="{% url 'hot' %}">Hot Questions</a>
+    <h1>Тесты</h1>
+
 </div>
 <div class="col-8">
-    {% for question in questions %}
-    {% include "components/question.html" with item=question %}
+{% for test in tests %}
+    {% include "components/test.html" with item=test %}
     {%endfor%}
-{% include "components/pagination.html" with page_obj=questions %}
+{% include "components/pagination.html" with page_obj=tests %}
 </div>
 {% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+{% load bootstrap5 %}
+
+<body >
+    <h1>Задача</h1>
+    <div>{{problem.description}}</div>
+<form method="post" action="{% url 'submit_solution' problem_id=problem.pk %}">
+        {% csrf_token %}
+<textarea name="code" class="form-control" rows="10">{% if not form.is_bound %}def my_function():
+    # ваш код здесь{% endif %}</textarea>
+    <button class="btn btn-outline-success" type="submit">Отправить</button>
+    </form>
+    <hr>
+    <h2>Предыдущие попытки</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Номер попытки</th>
+                <th>Время отправки</th>
+                <th>Использование памяти</th>
+                <th>Время компиляции</th>
+                <th>Результат</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attempt in previous_attempts %}
+            <tr>
+                <td>{{ attempt.attempt_number }}</td>
+                <td>{{ attempt.timestamp }}</td>
+                <td>{{ attempt.memory_usage }}</td>
+                <td>{{ attempt.compile_time }}</td>
+                <td>{{ attempt.result }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+{% endblock %}
